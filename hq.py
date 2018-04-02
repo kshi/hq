@@ -7,7 +7,6 @@ def make_search_query(str_array):
 
 def get_result_number(html):
     soup = BeautifulSoup(html.text,"lxml")
-    print(soup)
     results_str = soup.find('div',{'id':'resultStats'}).text.split(" ")[1].replace(",","")
     return int(results_str)
 
@@ -27,4 +26,10 @@ q3 = requests.get("https://www.google.com/search?q=" + make_search_query(answer3
 score1 = get_result_number(p1) / get_result_number(q1)
 score2 = get_result_number(p2) / get_result_number(q2)
 score3 = get_result_number(p3) / get_result_number(q3)
-print(max([score1,score2,score3],key=[answer1,answer2,answer3]))
+answer_array = [answer1, answer2, answer3]
+score_array = [score1, score2, score3]
+print(score1)
+print(score2)
+print(score3)
+max_score = max([0, 1, 2], key=lambda x: score_array[x])
+print(answer_array[max_score])
