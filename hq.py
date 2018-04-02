@@ -3,14 +3,18 @@ import requests
 from bs4 import BeautifulSoup
 
 def make_search_query(str_array):
-    return " ".join(["\"" + x + "\"" for x in str_array])
+    return " AND ".join(["\"" + x + "\"" for x in str_array])
 
 def get_result_number(html):
     soup = BeautifulSoup(html.text,"lxml")
     results_str = soup.find('div',{'id':'resultStats'}).text.split(" ")[1].replace(",","")
     return int(results_str)
 
+negate = False
 question_keywords = input().split(",")
+if "not" in question_keywords:
+    negate = True
+    question_keywords.remove("not")
 answer1 = input()
 answer1_keywords = answer1.split(",")
 p1 = requests.get("https://www.google.com/search?q=" + make_search_query(question_keywords + answer1_keywords))
@@ -31,5 +35,9 @@ score_array = [score1, score2, score3]
 print(score1)
 print(score2)
 print(score3)
-max_score = max([0, 1, 2], key=lambda x: score_array[x])
+if negate:
+    max_score = min([0, 1, 2], key=lambda x: score_array[x])
+else:
+    max_score = max([0, 1, 2], key=lambda x: score_array[x])
+print("")
 print(answer_array[max_score])
